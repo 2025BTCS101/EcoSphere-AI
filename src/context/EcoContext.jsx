@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const EcoContext = createContext();
 
@@ -60,15 +61,6 @@ export const EcoProvider = ({ children }) => {
     };
   });
 
-  // Current emissions totals (kg CO2e / month)
-  const [currentEmissions, setCurrentEmissions] = useState({
-    transport: 0,
-    electricity: 0,
-    food: 0,
-    shopping: 0,
-    total: 0
-  });
-
   // Historical lists & habits
   const [historicalData, setHistoricalData] = useState(() => {
     const saved = localStorage.getItem('eco_historical_data');
@@ -80,7 +72,32 @@ export const EcoProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : DEFAULT_HABITS;
   });
 
-  const [ecoScore, setEcoScore] = useState(650);
+  // Derived current emissions totals (kg CO2e / month)
+  const tEmissions = Math.round(
+    (calculatorInputs.transportDistance * EMISSION_FACTORS.transport[calculatorInputs.vehicleType]) +
+    (calculatorInputs.flightDistance * EMISSION_FACTORS.transport.flight)
+  );
+  const eEmissions = Math.round(calculatorInputs.electricityKwh * EMISSION_FACTORS.electricity);
+  const fEmissions = Math.round(EMISSION_FACTORS.food[calculatorInputs.dietType] * 30); // monthly
+  const sEmissions = Math.round(calculatorInputs.shoppingSpend * EMISSION_FACTORS.shopping);
+  const total = tEmissions + eEmissions + fEmissions + sEmissions;
+
+  const currentEmissions = {
+    transport: tEmissions,
+    electricity: eEmissions,
+    food: fEmissions,
+    shopping: sEmissions,
+    total
+  };
+
+  // Derived Eco Score
+  const basePoints = 850;
+  const footprintPenalty = currentEmissions.total * 0.5; // average ~500kg means 250 penalty
+  const completedHabitsPoints = habits
+    .filter(h => h.completed)
+    .reduce((sum, h) => sum + h.points, 0);
+
+  const ecoScore = Math.max(50, Math.min(1000, Math.round(basePoints - footprintPenalty + completedHabitsPoints)));
 
   // Chat message state for AI coach
   const [chatMessages, setChatMessages] = useState(() => {
@@ -95,44 +112,10 @@ export const EcoProvider = ({ children }) => {
     ];
   });
 
-  // Re-calculate carbon footprint whenever inputs change
+  // Sync calculator inputs to local storage
   useEffect(() => {
-    const tEmissions = Math.round(
-      (calculatorInputs.transportDistance * EMISSION_FACTORS.transport[calculatorInputs.vehicleType]) +
-      (calculatorInputs.flightDistance * EMISSION_FACTORS.transport.flight)
-    );
-    const eEmissions = Math.round(calculatorInputs.electricityKwh * EMISSION_FACTORS.electricity);
-    const fEmissions = Math.round(EMISSION_FACTORS.food[calculatorInputs.dietType] * 30); // monthly
-    const sEmissions = Math.round(calculatorInputs.shoppingSpend * EMISSION_FACTORS.shopping);
-
-    const total = tEmissions + eEmissions + fEmissions + sEmissions;
-
-    setCurrentEmissions({
-      transport: tEmissions,
-      electricity: eEmissions,
-      food: fEmissions,
-      shopping: sEmissions,
-      total
-    });
-
     localStorage.setItem('eco_calculator_inputs', JSON.stringify(calculatorInputs));
   }, [calculatorInputs]);
-
-  // Recalculate Eco Score dynamically
-  useEffect(() => {
-    // Standard scale: 1000 points max.
-    // 0 footprint = 850 base points.
-    // Footprint penalty: decreases score. E.g. penalty = total footprint / 2.
-    // Active habits completed: adds points.
-    const basePoints = 850;
-    const footprintPenalty = currentEmissions.total * 0.5; // average ~500kg means 250 penalty
-    const completedHabitsPoints = habits
-      .filter(h => h.completed)
-      .reduce((sum, h) => sum + h.points, 0);
-
-    const score = Math.max(50, Math.min(1000, Math.round(basePoints - footprintPenalty + completedHabitsPoints)));
-    setEcoScore(score);
-  }, [currentEmissions, habits]);
 
   // Sync state to local storage for Sandbox persistence
   useEffect(() => {

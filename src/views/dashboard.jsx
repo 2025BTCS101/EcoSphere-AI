@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEco } from '../context/EcoContext';
 import GlassCard from '../components/glass-card';
 import { 
@@ -17,7 +16,6 @@ import {
 import { 
   Award, 
   Leaf, 
-  TrendingUp, 
   TrendingDown,
   Zap, 
   Check, 
@@ -265,10 +263,13 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {habits.map((habit) => (
-            <div
+            <button
+              type="button"
               key={habit.id}
               onClick={() => toggleHabit(habit.id)}
-              className={`p-4 rounded-xl border flex items-center justify-between cursor-pointer transition-all duration-300 ${
+              aria-pressed={habit.completed}
+              aria-label={`Toggle habit: ${habit.name}`}
+              className={`p-4 rounded-xl border flex items-center justify-between cursor-pointer transition-all duration-300 w-full text-left font-normal ${
                 habit.completed 
                   ? 'border-brandGreen-500/40 bg-brandGreen-500/10 text-white' 
                   : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
@@ -295,7 +296,7 @@ export default function Dashboard() {
                 <Plus className="w-3 h-3" />
                 {habit.points} pts
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </GlassCard>

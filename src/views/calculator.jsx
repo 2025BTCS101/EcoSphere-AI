@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useEco } from '../context/EcoContext';
 import GlassCard from '../components/glass-card';
 import { 
@@ -8,7 +8,6 @@ import {
   ShoppingBag, 
   Save, 
   Plane,
-  HelpCircle,
   CheckCircle,
   TrendingDown
 } from 'lucide-react';
@@ -90,10 +89,11 @@ export default function Calculator() {
               {/* Ground Commute Slider */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-300 font-medium">Monthly Road Travel</span>
+                  <label htmlFor="range-road-travel" className="text-slate-300 font-medium">Monthly Road Travel</label>
                   <span className="text-brandGreen-400 font-semibold">{calculatorInputs.transportDistance} km</span>
                 </div>
                 <input 
+                  id="range-road-travel"
                   type="range" 
                   min="0" 
                   max="3000" 
@@ -128,12 +128,13 @@ export default function Calculator() {
               {/* Flights Slider */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+                  <label htmlFor="range-air-travel" className="flex items-center gap-1.5 text-slate-300 font-medium">
                     <Plane className="w-4 h-4 text-blue-400" /> Air Travel (Monthly Average)
-                  </span>
+                  </label>
                   <span className="text-brandGreen-400 font-semibold">{calculatorInputs.flightDistance} km</span>
                 </div>
                 <input 
+                  id="range-air-travel"
                   type="range" 
                   min="0" 
                   max="5000" 
@@ -162,10 +163,11 @@ export default function Calculator() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-300 font-medium">Electricity Usage</span>
+                  <label htmlFor="range-electricity" className="text-slate-300 font-medium">Electricity Usage</label>
                   <span className="text-brandGreen-400 font-semibold">{calculatorInputs.electricityKwh} kWh/month</span>
                 </div>
                 <input 
+                  id="range-electricity"
                   type="range" 
                   min="0" 
                   max="1000" 
@@ -230,10 +232,11 @@ export default function Calculator() {
                 <div className="space-y-4 mt-6">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-300 font-medium">Monthly Discretionary Spend</span>
+                      <label htmlFor="range-shopping" className="text-slate-300 font-medium">Monthly Discretionary Spend</label>
                       <span className="text-brandGreen-400 font-semibold">${calculatorInputs.shoppingSpend}</span>
                     </div>
                     <input 
+                      id="range-shopping"
                       type="range" 
                       min="0" 
                       max="1000" 
@@ -329,9 +332,10 @@ export default function Calculator() {
 
             {/* Logging Action */}
             <div className="border-t border-white/5 pt-6 mt-6 space-y-4">
-              <label className="text-xs font-medium text-slate-400 block">Select Month to Log Data</label>
+              <label htmlFor="select-month" className="text-xs font-medium text-slate-400 block">Select Month to Log Data</label>
               <div className="flex gap-2">
                 <select 
+                  id="select-month"
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
                   className="bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs flex-1 outline-none focus:border-brandGreen-500"

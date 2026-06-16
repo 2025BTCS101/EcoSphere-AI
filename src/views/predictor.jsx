@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useEco } from '../context/EcoContext';
 import { getCarbonPredictionInsights } from '../services/gemini';
 import GlassCard from '../components/glass-card';
@@ -15,8 +15,6 @@ import {
   TrendingDown, 
   Sparkles, 
   Sliders, 
-  HelpCircle, 
-  TrendingUp, 
   Zap,
   RefreshCw
 } from 'lucide-react';
@@ -51,47 +49,32 @@ export default function Predictor() {
   const [energyReductionPercent, setEnergyReductionPercent] = useState(10); // 0 to 50
   const [isDietGreen, setIsDietGreen] = useState(false);
 
-  const [predictedEmissions, setPredictedEmissions] = useState(0);
   const [aiInsight, setAiInsight] = useState('');
   const [loadingInsight, setLoadingInsight] = useState(false);
 
-  // Generate simulated future projection data
-  const [projectionChartData, setProjectionChartData] = useState([]);
+  // Derived state calculations to avoid state synchronizations in useEffect
+  const { transport, electricity, food, shopping } = currentEmissions;
+  const simulatedTransport = Math.round(transport * (1 - transitReductionPercent / 100));
+  const simulatedEnergy = Math.round(electricity * (1 - energyReductionPercent / 100));
+  const simulatedFood = isDietGreen ? Math.round(food * 0.6) : food;
+  const simulatedShopping = shopping;
 
-  // Calculate prediction based on sliders and current emissions
-  useEffect(() => {
-    // Current totals
-    const { transport, electricity, food, shopping } = currentEmissions;
+  const predictedEmissions = simulatedTransport + simulatedEnergy + simulatedFood + simulatedShopping;
 
-    // Apply reductions
-    const simulatedTransport = Math.round(transport * (1 - transitReductionPercent / 100));
-    const simulatedEnergy = Math.round(electricity * (1 - energyReductionPercent / 100));
-    const simulatedFood = isDietGreen ? Math.round(food * 0.6) : food; // vegan/vegetarian reduction (~40% off)
-    const simulatedShopping = shopping; // baseline
-
-    const nextMonthTotal = simulatedTransport + simulatedEnergy + simulatedFood + simulatedShopping;
-    setPredictedEmissions(nextMonthTotal);
-
-    // Prepare chart: 6 months history + 1 month prediction
-    const chartData = historicalData.map(d => ({
-      month: d.month,
-      Emissions: d.total,
-      type: 'Actual'
-    }));
-
-    // Add prediction month
-    chartData.push({
-      month: 'Jul (Proj)',
-      Emissions: nextMonthTotal,
-      type: 'Predicted'
-    });
-
-    setProjectionChartData(chartData);
-  }, [transitReductionPercent, energyReductionPercent, isDietGreen, currentEmissions, historicalData]);
+  const projectionChartData = historicalData.map(d => ({
+    month: d.month,
+    Emissions: d.total,
+    type: 'Actual'
+  }));
+  projectionChartData.push({
+    month: 'Jul (Proj)',
+    Emissions: predictedEmissions,
+    type: 'Predicted'
+  });
 
   // Load AI Insights dynamically on key events
   const loadInsights = async () => {
-    setLoadingInsight(true);
+    Promise.resolve().then(() => setLoadingInsight(true));
     try {
       const insight = await getCarbonPredictionInsights(apiKey, historicalData, currentEmissions);
       setAiInsight(insight);
@@ -104,8 +87,26 @@ export default function Predictor() {
   };
 
   useEffect(() => {
-    loadInsights();
-  }, [apiKey]); // reload if key changes or on first load
+    let active = true;
+    const fetchInsights = async () => {
+      Promise.resolve().then(() => {
+        if (active) setLoadingInsight(true);
+      });
+      try {
+        const insight = await getCarbonPredictionInsights(apiKey, historicalData, currentEmissions);
+        if (active) setAiInsight(insight);
+      } catch (error) {
+        console.error(error);
+        if (active) setAiInsight("Unable to fetch AI prediction insight at this moment. Focus on transit reduction!");
+      } finally {
+        if (active) setLoadingInsight(false);
+      }
+    };
+    fetchInsights();
+    return () => {
+      active = false;
+    };
+  }, [apiKey, historicalData, currentEmissions]);
 
   return (
     <div className="p-6 space-y-6">
@@ -129,10 +130,11 @@ export default function Predictor() {
                 {/* Transport reduction slider */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-300 font-medium">Reduce Commuting</span>
+                    <label htmlFor="sim-commute" className="text-slate-300 font-medium">Reduce Commuting</label>
                     <span className="text-brandGreen-400 font-bold">-{transitReductionPercent}%</span>
                   </div>
                   <input 
+                    id="sim-commute"
                     type="range" 
                     min="0" 
                     max="50" 
@@ -147,10 +149,11 @@ export default function Predictor() {
                 {/* Energy reduction slider */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-300 font-medium">Reduce Home Energy</span>
+                    <label htmlFor="sim-energy" className="text-slate-300 font-medium">Reduce Home Energy</label>
                     <span className="text-brandGreen-400 font-bold">-{energyReductionPercent}%</span>
                   </div>
                   <input 
+                    id="sim-energy"
                     type="range" 
                     min="0" 
                     max="50" 
@@ -167,6 +170,8 @@ export default function Predictor() {
                   <span className="text-sm font-medium text-slate-300 block">Shift to Low-Carbon Diet</span>
                   <button
                     onClick={() => setIsDietGreen(prev => !prev)}
+                    aria-pressed={isDietGreen}
+                    aria-label="Toggle plant-based diet simulation"
                     className={`w-full p-3.5 rounded-xl border flex items-center justify-between transition-all duration-300 ${
                       isDietGreen 
                         ? 'border-brandGreen-500/40 bg-brandGreen-500/10 text-white' 
@@ -255,6 +260,7 @@ export default function Predictor() {
                 disabled={loadingInsight}
                 className="p-1.5 rounded-lg border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white transition-all disabled:opacity-50 disabled:animate-spin"
                 title="Regenerate Insights"
+                aria-label="Regenerate Insights"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>

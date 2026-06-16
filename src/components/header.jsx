@@ -1,5 +1,4 @@
-import React from 'react';
-import { Sparkles, RefreshCw, Database, Cloud } from 'lucide-react';
+import { RefreshCw, Database, Cloud } from 'lucide-react';
 import { useEco } from '../context/EcoContext';
 
 export default function Header({ currentView }) {
@@ -46,6 +45,7 @@ export default function Header({ currentView }) {
           onClick={handleReset}
           className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-400 hover:text-white transition-all duration-300"
           title="Reset application data"
+          aria-label="Reset application data"
         >
           <RefreshCw className="w-4 h-4" />
         </button>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useEco } from '../context/EcoContext';
 import { getSustainabilityAdvice } from '../services/gemini';
 import GlassCard from '../components/glass-card';
@@ -7,11 +7,37 @@ import {
   Sparkles, 
   User, 
   Bot, 
-  Zap, 
   ArrowRight,
-  TrendingDown,
   Trash2
 } from 'lucide-react';
+
+const createUserMsg = (text) => ({
+  id: Date.now().toString() + '-user',
+  role: 'user',
+  text,
+  timestamp: new Date().toISOString()
+});
+
+const createModelMsg = (text) => ({
+  id: Date.now().toString() + '-model',
+  role: 'model',
+  text,
+  timestamp: new Date().toISOString()
+});
+
+const createErrorMsg = () => ({
+  id: Date.now().toString() + '-error',
+  role: 'model',
+  text: 'Sorry, I failed to process that query. Please check your network connection or Gemini API credentials.',
+  timestamp: new Date().toISOString()
+});
+
+const createWelcomeMsg = () => ({
+  id: 'welcome',
+  role: 'model',
+  text: "Welcome back! Let's discuss how to optimize your carbon footprint. How can I help you today?",
+  timestamp: new Date().toISOString()
+});
 
 export default function Coach() {
   const { 
@@ -35,12 +61,7 @@ export default function Coach() {
     if (!query.trim() || isLoading) return;
 
     // 1. Add User Message
-    const userMsg = {
-      id: Date.now().toString() + '-user',
-      role: 'user',
-      text: query,
-      timestamp: new Date().toISOString()
-    };
+    const userMsg = createUserMsg(query);
 
     const updatedMessages = [...chatMessages, userMsg];
     setChatMessages(updatedMessages);
@@ -52,21 +73,11 @@ export default function Coach() {
       const responseText = await getSustainabilityAdvice(apiKey, updatedMessages, currentEmissions);
       
       // 3. Add Model Response
-      const modelMsg = {
-        id: Date.now().toString() + '-model',
-        role: 'model',
-        text: responseText,
-        timestamp: new Date().toISOString()
-      };
+      const modelMsg = createModelMsg(responseText);
       setChatMessages(prev => [...prev, modelMsg]);
     } catch (error) {
       console.error(error);
-      const errorMsg = {
-        id: Date.now().toString() + '-error',
-        role: 'model',
-        text: 'Sorry, I failed to process that query. Please check your network connection or Gemini API credentials.',
-        timestamp: new Date().toISOString()
-      };
+      const errorMsg = createErrorMsg();
       setChatMessages(prev => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
@@ -82,14 +93,7 @@ export default function Coach() {
 
   const clearChat = () => {
     if (window.confirm("Are you sure you want to clear chat history?")) {
-      setChatMessages([
-        {
-          id: 'welcome',
-          role: 'model',
-          text: 'Welcome back! Let\'s discuss how to optimize your carbon footprint. How can I help you today?',
-          timestamp: new Date().toISOString()
-        }
-      ]);
+      setChatMessages([createWelcomeMsg()]);
     }
   };
 
@@ -246,6 +250,8 @@ export default function Coach() {
           <div className="p-4 border-t border-darkBorder bg-white/5">
             <div className="relative flex items-center">
               <textarea
+                id="chat-textarea"
+                aria-label="Sustainability query input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
@@ -257,6 +263,7 @@ export default function Coach() {
                 onClick={() => handleSendMessage()}
                 disabled={!input.trim() || isLoading}
                 className="absolute right-2.5 p-2 rounded-lg bg-brandGreen-600 text-white hover:bg-brandGreen-500 hover:shadow-glow disabled:bg-white/5 disabled:text-slate-600 disabled:shadow-none transition-all cursor-pointer"
+                aria-label="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>

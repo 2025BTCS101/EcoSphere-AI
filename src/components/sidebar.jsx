@@ -1,9 +1,7 @@
-import React from 'react';
 import { 
   LayoutDashboard, 
   Calculator, 
   MessageSquareCode, 
-  LineChart, 
   Settings, 
   Leaf, 
   TrendingUp,

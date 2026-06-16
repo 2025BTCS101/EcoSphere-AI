@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useEco } from '../context/EcoContext';
 import { initFirebase } from '../services/firebase';
 import GlassCard from '../components/glass-card';
@@ -90,8 +90,9 @@ export default function Settings() {
 
             <div className="space-y-4">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-300">Gemini API Key</label>
+                <label htmlFor="gemini-api-key" className="text-sm font-semibold text-slate-300">Gemini API Key</label>
                 <input 
+                  id="gemini-api-key"
                   type="password"
                   placeholder="Paste your AI Studio API key here (AIzaSy...)"
                   value={localApiKey}
@@ -119,8 +120,9 @@ export default function Settings() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">API Key</label>
+                <label htmlFor="fb-api-key" className="text-xs font-semibold text-slate-400">API Key</label>
                 <input 
+                  id="fb-api-key"
                   type="text"
                   placeholder="apiKey"
                   value={localFbConfig.apiKey}
@@ -130,8 +132,9 @@ export default function Settings() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">Project ID</label>
+                <label htmlFor="fb-project-id" className="text-xs font-semibold text-slate-400">Project ID</label>
                 <input 
+                  id="fb-project-id"
                   type="text"
                   placeholder="projectId"
                   value={localFbConfig.projectId}
@@ -141,8 +144,9 @@ export default function Settings() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">Auth Domain</label>
+                <label htmlFor="fb-auth-domain" className="text-xs font-semibold text-slate-400">Auth Domain</label>
                 <input 
+                  id="fb-auth-domain"
                   type="text"
                   placeholder="authDomain"
                   value={localFbConfig.authDomain}
@@ -152,8 +156,9 @@ export default function Settings() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">Storage Bucket</label>
+                <label htmlFor="fb-storage-bucket" className="text-xs font-semibold text-slate-400">Storage Bucket</label>
                 <input 
+                  id="fb-storage-bucket"
                   type="text"
                   placeholder="storageBucket"
                   value={localFbConfig.storageBucket}
@@ -163,8 +168,9 @@ export default function Settings() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">Messaging Sender ID</label>
+                <label htmlFor="fb-messaging-sender-id" className="text-xs font-semibold text-slate-400">Messaging Sender ID</label>
                 <input 
+                  id="fb-messaging-sender-id"
                   type="text"
                   placeholder="messagingSenderId"
                   value={localFbConfig.messagingSenderId}
@@ -174,8 +180,9 @@ export default function Settings() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-400">App ID</label>
+                <label htmlFor="fb-app-id" className="text-xs font-semibold text-slate-400">App ID</label>
                 <input 
+                  id="fb-app-id"
                   type="text"
                   placeholder="appId"
                   value={localFbConfig.appId}
@@ -246,7 +253,7 @@ export default function Settings() {
                   <a 
                     href="https://aistudio.google.com" 
                     target="_blank" 
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-brandGreen-400 hover:text-brandGreen-300 font-semibold inline-flex items-center gap-1 mt-1.5"
                   >
                     <span>Google AI Studio</span>
@@ -263,7 +270,7 @@ export default function Settings() {
                   <a 
                     href="https://console.firebase.google.com" 
                     target="_blank" 
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-brandGreen-400 hover:text-brandGreen-300 font-semibold inline-flex items-center gap-1 mt-1.5"
                   >
                     <span>Firebase Console</span>

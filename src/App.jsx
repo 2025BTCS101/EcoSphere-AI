@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { EcoProvider } from './context/EcoContext';
 import { initFirebase } from './services/firebase';
 import Sidebar from './components/sidebar';
@@ -74,6 +74,7 @@ export default function App() {
               <button 
                 onClick={() => setMobileSidebarOpen(false)}
                 className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 border border-white/10"
+                aria-label="Close sidebar"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -91,6 +92,7 @@ export default function App() {
             <button
               onClick={() => setMobileSidebarOpen(true)}
               className="md:hidden ml-4 p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
+              aria-label="Open sidebar"
             >
               <Menu className="w-5 h-5" />
             </button>
