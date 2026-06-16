@@ -8,7 +8,7 @@ function getSimulatedResponse(message, emissions) {
   const msg = message.toLowerCase();
   const { transport, electricity, food, shopping, total } = emissions;
 
-  let advice = "";
+  let advice;
 
   if (msg.includes("transport") || msg.includes("car") || msg.includes("drive") || msg.includes("flight") || msg.includes("travel")) {
     advice = `Your transport emissions are currently **${transport} kg CO2e/month**. 
@@ -84,31 +84,14 @@ export async function getSustainabilityAdvice(apiKey, messages, currentEmissions
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash"
+});
 
-    // Build system instructions and inject current carbon totals
-    const systemInstruction = `You are EcoSphere AI, a professional sustainability consultant and carbon footprint analyst.
-    The user's current monthly carbon footprint breakdown:
-    - Transport (driving & flights): ${currentEmissions.transport} kg CO2e
-    - Electricity/Energy: ${currentEmissions.electricity} kg CO2e
-    - Food & Diet habits: ${currentEmissions.food} kg CO2e
-    - Shopping & Goods: ${currentEmissions.shopping} kg CO2e
-    - Total Footprint: ${currentEmissions.total} kg CO2e
-    
-    Give specific, concise, actionable advice. Avoid long paragraphs. Use bullet points and bold text where helpful.
-    Always be encouraging but scientific. Keep recommendations realistic.`;
-
-    // Map message history into Gemini chat format
-    const contents = messages.map(m => ({
-      role: m.role === 'model' ? 'model' : 'user',
-      parts: [{ text: m.text }]
-    }));
+ 
 
     // Insert system instructions in front or use chat sessions
-    const chat = model.startChat({
-      history: contents.slice(0, -1), // feed previous messages
-      systemInstruction,
-    });
+   const chat = model.startChat();
 
     const lastMessage = messages[messages.length - 1]?.text || "";
     const result = await chat.sendMessage(lastMessage);
@@ -140,7 +123,7 @@ export async function getCarbonPredictionInsights(apiKey, emissionsHistory, curr
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
