@@ -169,6 +169,7 @@ export default function Predictor() {
                 <div className="space-y-3 pt-2">
                   <span className="text-sm font-medium text-slate-300 block">Shift to Low-Carbon Diet</span>
                   <button
+                    type="button"
                     onClick={() => setIsDietGreen(prev => !prev)}
                     aria-pressed={isDietGreen}
                     aria-label="Toggle plant-based diet simulation"
@@ -256,6 +257,7 @@ export default function Predictor() {
                 <h4 className="font-bold text-sm text-white">AI Sustainability Pathway Insights</h4>
               </div>
               <button
+                type="button"
                 onClick={loadInsights}
                 disabled={loadingInsight}
                 className="p-1.5 rounded-lg border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white transition-all disabled:opacity-50 disabled:animate-spin"

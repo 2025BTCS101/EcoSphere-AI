@@ -25,7 +25,7 @@ Suggestions to lower this:
 1. **Reduce Red Meat**: Beef and lamb have 10x the carbon footprint of chicken or fish, and 30x that of lentils/beans. Replacing beef just twice a week saves around 200kg of CO2 per year.
 2. **Prevent Food Waste**: 30% of global food is wasted. Planning meals, storing food properly, and freezing leftovers directly cuts landfill methane emissions.
 3. **Eat Seasonal**: Out-of-season produce imported via air has a massive freight impact. Prioritize local and regional grains and greens.`;
-  } else if (msg.includes("electricity") || msg.includes("power") || msg.includes("energy") || msg.includes("heat") || msg.includes("ac")) {
+  } else if (msg.includes("electricity") || msg.includes("power") || msg.includes("energy") || msg.includes("heat") || /\bac\b/i.test(msg)) {
     advice = `Your electricity impact is **${electricity} kg CO2e/month**. 
     
 Here is how you can optimize your home:

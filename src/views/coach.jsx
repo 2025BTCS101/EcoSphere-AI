@@ -147,6 +147,7 @@ export default function Coach() {
 
             <div className="border-t border-white/5 pt-4">
               <button
+                type="button"
                 onClick={clearChat}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-500/20 bg-red-950/20 text-red-400 hover:bg-red-900/20 text-xs font-semibold transition-all"
               >
@@ -234,6 +235,7 @@ export default function Coach() {
               <div className="flex flex-wrap gap-2">
                 {quickSuggestions.map((item, idx) => (
                   <button
+                    type="button"
                     key={idx}
                     onClick={() => handleSendMessage(item.query)}
                     className="text-xs px-3 py-1.5 rounded-lg border border-white/5 bg-white/5 text-slate-400 hover:text-white hover:border-brandGreen-500/30 hover:bg-brandGreen-500/5 transition-all flex items-center gap-1.5"
@@ -260,6 +262,7 @@ export default function Coach() {
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-14 py-3.5 text-sm text-slate-100 placeholder:text-slate-500 outline-none resize-none transition-all focus:border-brandGreen-500/50 focus:bg-white/10"
               />
               <button
+                type="button"
                 onClick={() => handleSendMessage()}
                 disabled={!input.trim() || isLoading}
                 className="absolute right-2.5 p-2 rounded-lg bg-brandGreen-600 text-white hover:bg-brandGreen-500 hover:shadow-glow disabled:bg-white/5 disabled:text-slate-600 disabled:shadow-none transition-all cursor-pointer"

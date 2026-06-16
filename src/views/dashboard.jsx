@@ -20,7 +20,8 @@ import {
   Zap, 
   Check, 
   Plus, 
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 
 // Custom tooltips to match SaaS aesthetic
@@ -60,6 +61,38 @@ export default function Dashboard() {
     { name: 'Food / Diet', value: currentEmissions.food, color: '#10b981' },
     { name: 'Shopping', value: currentEmissions.shopping, color: '#a78bfa' },
   ].filter(item => item.value > 0);
+
+  // Get highest emissions category for personalized insights
+  const getPersonalizedInsights = () => {
+    const categories = [
+      { name: 'Transport', value: currentEmissions.transport, tips: [
+        '🚗 Ground commute is your largest emission sector. Try public transit or carpooling twice a week to save up to 120kg CO2e/month.',
+        '✈️ Limit non-essential flights or buy verified gold-standard offsets when traveling by air.',
+        '🚲 Consider switching short trips (<5km) to walking or electric biking to eliminate tailpipe emissions.'
+      ]},
+      { name: 'Energy', value: currentEmissions.electricity, tips: [
+        '💡 Residential energy usage is a significant carbon contributor. Switch your light bulbs to LEDs (uses 75% less power).',
+        '🌡️ Adjust your smart thermostat by just 1-2 degrees. This can trim up to 10% off your monthly utility bill.',
+        '🔌 Connect home entertainment and computing hubs to smart power strips to prevent phantom load draw.'
+      ]},
+      { name: 'Food / Diet', value: currentEmissions.food, tips: [
+        '🥗 Transitioning to vegetarian or fully plant-based meal days twice a week will reduce dietary emissions by up to 35%.',
+        '🧊 Prevent food waste by planning weekly meals. Landfilled food waste produces high levels of heat-trapping methane.',
+        '🍏 Shop for local, seasonal produce to minimize the long-distance air-freight impact of out-of-season items.'
+      ]},
+      { name: 'Shopping', value: currentEmissions.shopping, tips: [
+        '🛍️ Lifecycle manufacturing footprints represent significant indirect impact. Practice the 48-hour rule before buying discretionary items.',
+        '💻 Prioritize purchasing refurbished electronics or durable goods that are built to be repaired rather than replaced.',
+        '👕 Explore thrift options or second-hand clothing marketplaces to double a garment\'s lifecycle and reduce impact by 44%.'
+      ]}
+    ];
+
+    // Find the category with maximum emissions
+    const maxCategory = categories.reduce((prev, current) => (prev.value > current.value) ? prev : current);
+    return maxCategory;
+  };
+
+  const insightData = getPersonalizedInsights();
 
   return (
     <div className="p-6 space-y-6">
@@ -250,6 +283,31 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* Personalized Reduction Pathway Recommendations */}
+      <GlassCard className="p-6 border-brandGreen-500/20">
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles className="w-5 h-5 text-brandGreen-400 animate-pulse" />
+          <div>
+            <h3 className="font-bold text-lg text-white">Personalized Reduction Priority</h3>
+            <p className="text-xs text-slate-400">Custom lifestyle improvements based on your highest emission sector</p>
+          </div>
+        </div>
+
+        <div className="bg-[#111827]/40 border border-white/5 rounded-xl p-4">
+          <p className="text-xs text-slate-300 font-semibold mb-3">
+            Your primary emission driver is <span className="text-brandGreen-400 font-bold">{insightData.name}</span>. Here is your targeted action roadmap:
+          </p>
+          <ul className="space-y-2.5 text-xs text-slate-400">
+            {insightData.tips.map((tip, idx) => (
+              <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+                <span className="w-5 h-5 rounded-full bg-brandGreen-500/10 text-brandGreen-400 border border-brandGreen-500/20 text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{idx + 1}</span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </GlassCard>
 
       {/* Interactive Green Habits panel */}
       <GlassCard className="p-6">

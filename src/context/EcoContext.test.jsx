@@ -14,7 +14,6 @@ beforeAll(() => {
     value: mockLocalStorage,
     writable: true
   });
-  global.localStorage = mockLocalStorage;
 });
 
 beforeEach(() => {

@@ -44,32 +44,59 @@ export const EcoProvider = ({ children }) => {
   // Credentials (saved locally)
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || '');
   const [firebaseConfig, setFirebaseConfig] = useState(() => {
-    const config = localStorage.getItem('firebase_config');
-    return config ? JSON.parse(config) : { apiKey: '', authDomain: '', projectId: '', storageBucket: '', messagingSenderId: '', appId: '' };
+    try {
+      const config = localStorage.getItem('firebase_config');
+      return config ? JSON.parse(config) : { apiKey: '', authDomain: '', projectId: '', storageBucket: '', messagingSenderId: '', appId: '' };
+    } catch (err) {
+      console.error("Auto Firebase initialization failed on parsing storage config:", err);
+      return { apiKey: '', authDomain: '', projectId: '', storageBucket: '', messagingSenderId: '', appId: '' };
+    }
   });
 
   // Carbon calculator form input state
   const [calculatorInputs, setCalculatorInputs] = useState(() => {
-    const saved = localStorage.getItem('eco_calculator_inputs');
-    return saved ? JSON.parse(saved) : {
-      transportDistance: 350, // km/month
-      vehicleType: 'sedan',
-      flightDistance: 0, // km/month
-      electricityKwh: 220, // kWh/month
-      dietType: 'balanced',
-      shoppingSpend: 150, // $/month
-    };
+    try {
+      const saved = localStorage.getItem('eco_calculator_inputs');
+      return saved ? JSON.parse(saved) : {
+        transportDistance: 350, // km/month
+        vehicleType: 'sedan',
+        flightDistance: 0, // km/month
+        electricityKwh: 220, // kWh/month
+        dietType: 'balanced',
+        shoppingSpend: 150, // $/month
+      };
+    } catch (err) {
+      console.error("Failed to parse calculator inputs, using defaults:", err);
+      return {
+        transportDistance: 350,
+        vehicleType: 'sedan',
+        flightDistance: 0,
+        electricityKwh: 220,
+        dietType: 'balanced',
+        shoppingSpend: 150,
+      };
+    }
   });
 
   // Historical lists & habits
   const [historicalData, setHistoricalData] = useState(() => {
-    const saved = localStorage.getItem('eco_historical_data');
-    return saved ? JSON.parse(saved) : INITIAL_HISTORICAL_DATA;
+    try {
+      const saved = localStorage.getItem('eco_historical_data');
+      return saved ? JSON.parse(saved) : INITIAL_HISTORICAL_DATA;
+    } catch (err) {
+      console.error("Failed to parse historical data, using defaults:", err);
+      return INITIAL_HISTORICAL_DATA;
+    }
   });
 
   const [habits, setHabits] = useState(() => {
-    const saved = localStorage.getItem('eco_habits');
-    return saved ? JSON.parse(saved) : DEFAULT_HABITS;
+    try {
+      const saved = localStorage.getItem('eco_habits');
+      return saved ? JSON.parse(saved) : DEFAULT_HABITS;
+    } catch (err) {
+      console.error("Failed to parse habits, using defaults:", err);
+      return DEFAULT_HABITS;
+    }
   });
 
   // Derived current emissions totals (kg CO2e / month)
@@ -101,15 +128,27 @@ export const EcoProvider = ({ children }) => {
 
   // Chat message state for AI coach
   const [chatMessages, setChatMessages] = useState(() => {
-    const saved = localStorage.getItem('eco_chat_messages');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'welcome',
-        role: 'model',
-        text: 'Hello! I am your EcoSphere AI Sustainability Coach. I have analyzed your carbon calculator profile. You are doing well, but we can optimize your transport and dietary habits. Ask me anything about reducing your carbon footprint!',
-        timestamp: new Date().toISOString()
-      }
-    ];
+    try {
+      const saved = localStorage.getItem('eco_chat_messages');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'welcome',
+          role: 'model',
+          text: 'Hello! I am your EcoSphere AI Sustainability Coach. I have analyzed your carbon calculator profile. You are doing well, but we can optimize your transport and dietary habits. Ask me anything about reducing your carbon footprint!',
+          timestamp: new Date().toISOString()
+        }
+      ];
+    } catch (err) {
+      console.error("Failed to parse chat messages, using defaults:", err);
+      return [
+        {
+          id: 'welcome',
+          role: 'model',
+          text: 'Hello! I am your EcoSphere AI Sustainability Coach. I have analyzed your carbon calculator profile. You are doing well, but we can optimize your transport and dietary habits. Ask me anything about reducing your carbon footprint!',
+          timestamp: new Date().toISOString()
+        }
+      ];
+    }
   });
 
   // Sync calculator inputs to local storage

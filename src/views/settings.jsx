@@ -35,6 +35,9 @@ export default function Settings() {
 
   const handleSave = () => {
     // 1. Save Gemini Key
+    if (localApiKey && !localApiKey.trim().startsWith('AIzaSy')) {
+      alert("WARNING: The Google Gemini API key typically starts with 'AIzaSy'. Please check your credentials.");
+    }
     localStorage.setItem('gemini_api_key', localApiKey);
     setApiKey(localApiKey);
 
@@ -210,6 +213,7 @@ export default function Settings() {
           {/* Action buttons footer */}
           <div className="flex justify-between items-center bg-white/5 border border-white/5 p-4 rounded-2xl">
             <button
+              type="button"
               onClick={handleFactoryReset}
               className="glass-btn-danger text-xs font-semibold"
             >
@@ -218,6 +222,7 @@ export default function Settings() {
             </button>
 
             <button
+              type="button"
               onClick={handleSave}
               className="glass-btn-primary text-xs font-semibold py-2 px-6"
             >

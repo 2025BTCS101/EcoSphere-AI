@@ -1,5 +1,6 @@
 import { RefreshCw, Database, Cloud } from 'lucide-react';
 import { useEco } from '../context/EcoContext';
+import PropTypes from 'prop-types';
 
 export default function Header({ currentView }) {
   const { apiKey, resetData } = useEco();
@@ -53,3 +54,7 @@ export default function Header({ currentView }) {
     </header>
   );
 }
+
+Header.propTypes = {
+  currentView: PropTypes.string.isRequired,
+};

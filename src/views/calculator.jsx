@@ -107,10 +107,13 @@ export default function Calculator() {
               {/* Vehicle Type Selection */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Primary Transport Mode</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3" role="listbox" aria-label="Vehicle type selector">
                   {vehicles.map((v) => (
                     <button
                       key={v.id}
+                      type="button"
+                      role="option"
+                      aria-selected={calculatorInputs.vehicleType === v.id}
                       onClick={() => handleInputChange('vehicleType', v.id)}
                       className={`p-3 rounded-xl border text-left transition-all duration-300 ${
                         calculatorInputs.vehicleType === v.id
@@ -195,10 +198,13 @@ export default function Calculator() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3" role="listbox" aria-label="Diet type selector">
                 {diets.map((d) => (
                   <button
                     key={d.id}
+                    type="button"
+                    role="option"
+                    aria-selected={calculatorInputs.dietType === d.id}
                     onClick={() => handleInputChange('dietType', d.id)}
                     className={`w-full p-2.5 rounded-xl border text-left flex items-center gap-3 transition-all duration-300 ${
                       calculatorInputs.dietType === d.id
@@ -355,6 +361,7 @@ export default function Calculator() {
                 </select>
 
                 <button
+                  type="button"
                   onClick={handleSaveLogs}
                   className="glass-btn-primary py-2 px-4 text-xs font-semibold"
                 >

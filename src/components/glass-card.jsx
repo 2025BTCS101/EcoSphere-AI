@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function GlassCard({ children, className = '', hoverEffect = true, onClick }) {
   return (
     <div 
@@ -11,3 +13,10 @@ export default function GlassCard({ children, className = '', hoverEffect = true
     </div>
   );
 }
+
+GlassCard.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  hoverEffect: PropTypes.bool,
+  onClick: PropTypes.func,
+};

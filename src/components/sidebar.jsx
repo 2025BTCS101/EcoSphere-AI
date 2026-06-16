@@ -8,6 +8,7 @@ import {
   Award
 } from 'lucide-react';
 import { useEco } from '../context/EcoContext';
+import PropTypes from 'prop-types';
 
 export default function Sidebar({ currentView, setView }) {
   const { ecoScore, getEcoRank } = useEco();
@@ -55,13 +56,16 @@ export default function Sidebar({ currentView, setView }) {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <nav className="flex-1 px-4 py-6 space-y-1" role="tablist">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentView === item.id;
           return (
             <button
               key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => setView(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                 isActive 
@@ -84,3 +88,8 @@ export default function Sidebar({ currentView, setView }) {
     </aside>
   );
 }
+
+Sidebar.propTypes = {
+  currentView: PropTypes.string.isRequired,
+  setView: PropTypes.func.isRequired,
+};

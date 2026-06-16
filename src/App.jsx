@@ -72,6 +72,7 @@ export default function App() {
             {/* Sidebar drawer container */}
             <div className="relative flex flex-col w-64 max-w-xs bg-darkBg border-r border-darkBorder animate-[slideIn_0.3s_ease-out]">
               <button 
+                type="button"
                 onClick={() => setMobileSidebarOpen(false)}
                 className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-white/5 border border-white/10"
                 aria-label="Close sidebar"
@@ -90,6 +91,7 @@ export default function App() {
           <div className="flex items-center">
             {/* Hamburger for mobile */}
             <button
+              type="button"
               onClick={() => setMobileSidebarOpen(true)}
               className="md:hidden ml-4 p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
               aria-label="Open sidebar"

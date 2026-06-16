@@ -16,7 +16,7 @@ EcoSphere AI is an AI-powered Carbon Footprint Intelligence Platform designed to
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.3.1-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Google Gemini" />
   <img src="https://img.shields.io/badge/Firebase_Firestore-12.14.0-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-  <img src="https://img.shields.io/badge/Vitest-Tested-76E2B2?style=for-the-badge&logo=vitest&logoColor=black" alt="Vitest" />
+  <img src="https://img.shields.io/badge/Vitest-17_Tests_Passed-76E2B2?style=for-the-badge&logo=vitest&logoColor=black" alt="Vitest" />
 </p>
 
 ---
@@ -63,6 +63,7 @@ Climate change is the defining crisis of our time, yet individuals often find it
 *   **📈 Prediction & Trend Dashboard:** Multi-month historical tracking and forecasting displaying carbon projection lines for proactive reduction.
 *   **🌳 Environmental Offset Translation:** Converts raw metric tons of carbon into visual equivalencies, such as the equivalent number of adult trees required to offset emissions.
 *   **🔌 Dual Connection Architecture:** Supports an offline-first **Sandbox Mode** (relying on LocalStorage and local rule-based models) and a **Cloud Mode** (synced with Firebase Firestore).
+*   **💡 Personalized Reduction Priority Panel:** Integrates a dynamic recommendation card that parses emissions in real-time, isolates the highest carbon-contributing sector, and serves three direct, high-leverage lifestyle actions.
 
 ---
 
@@ -193,6 +194,7 @@ EcoSphere AI uses a multi-tier logic architecture to ensure reliability and resp
 
 1.  **AI Cloud Mode:** If a Gemini API Key is configured in the settings dashboard, the app initiates `GoogleGenerativeAI` targeting the `gemini-2.5-flash` model. It injects the user's specific emissions dataset and queries the conversational agent for responses.
 2.  **Sandbox Mode Fallback:** If no API key is specified, the application defaults to a built-in rules engine. This offline engine analyzes user variables (such as checking if Transport is the highest emission sector) to simulate natural-sounding, highly helpful carbon reduction strategies and monthly trend projections with zero network overhead.
+    *   *Security Fix:* Standard word boundary filters (`/\bac\b/i`) isolate checks for individual keywords (preventing collisions like the characters `ac` matching inside other words like `coach`).
 
 ---
 
@@ -222,24 +224,24 @@ EcoSphere-AI/
 │   │   └── sidebar.jsx     # Navigation control panel featuring Eco Score badge
 │   │
 │   ├── context/            # Centralized state management
-│   │   ├── EcoContext.jsx  # Main state provider containing formulas & presets
+│   │   ├── EcoContext.jsx  # Main state provider containing formulas, try-catch parse guards
 │   │   └── EcoContext.test.jsx
 │   │
 │   ├── services/           # External API integrations
 │   │   ├── firebase.js     # Initialization logic for Firestore Cloud Storage
-│   │   └── gemini.js       # Integrates Gemini AI client and fallback engines
+│   │   └── gemini.js       # Integrates Gemini AI client and boundary word checks
 │   │
 │   ├── views/              # View screens
 │   │   ├── calculator.jsx  # Interactive Carbon footprint input form
 │   │   ├── calculator.test.jsx
 │   │   ├── coach.jsx       # Conversational AI coach container
-│   │   ├── dashboard.jsx   # Core overview dashboard
+│   │   ├── dashboard.jsx   # Core overview dashboard, custom suggestions panel
 │   │   ├── predictor.jsx   # Forecasting & historical graphs screen
 │   │   └── settings.jsx    # Config credentials screen
 │   │
 │   ├── App.css             # Main styling classes
 │   ├── App.jsx             # Top level layout & drawer triggers
-│   ├── index.css           # Global Tailwind directive styles
+│   ├── index.css           # Global Tailwind directives & focus outlines
 │   └── main.jsx            # DOM compiler anchor
 │
 ├── package.json            # Scripts, workspace parameters, and version list
@@ -287,12 +289,13 @@ npm run build
 
 ## 🧪 Automated Testing
 
-We maintain a suite of unit and integration tests built on **Vitest** to ensure calculator arithmetic, context updates, and view events are functional and bug-free.
+We maintain a suite of unit and integration tests built on **Vitest** to ensure calculator arithmetic, context updates, view events, and mock services are functional and bug-free.
 
 ### Run Tests
 ```bash
 npm run test
 ```
+*   **Coverage Status:** 17 tests across 7 suites passing successfully.
 
 ---
 
